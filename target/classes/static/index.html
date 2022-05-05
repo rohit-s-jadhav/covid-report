@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+		integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
+
+	<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+		integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+		crossorigin="anonymous"></script>
+	<script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+
+	<script>
+		$(document).ready(function () {
+			var covidTable = $('#covidTable').DataTable({
+				ajax: '/get-covid-data',
+				sAjaxDataProp: 'covidResponseList',
+				lengthMenu: [[20, 50, 100, -1], [20, 50, 100, "All"]],
+				columns: [{
+					data: 'country',
+					render: function (data, type, row) {
+					var countryWithFlag = `<img src="${row.countryInfo.flag}" width="40" height="27"> ${data}`;
+					return countryWithFlag;
+					}
+				}, {
+					data: 'todayCases'
+				}, {
+					data: 'todayDeaths'
+				}, {
+					data: 'deaths'
+				}, {
+					data: 'todayRecovered'
+				}, {
+					data: 'recovered'
+				}, {
+					data: 'cases'
+				}, {
+					data: 'tests'
+				}, {
+					data: 'population'
+				}]
+			});
+
+			$('#covidTable tbody').on('click', 'tr', function () {
+				var countryData = covidTable.row(this).data();
+				$('#countryModal').modal('show');
+
+				//  setting data
+				$("#countryFlag").attr("src", countryData.countryInfo.flag);
+				$('#countryHeader').text(countryData.country);
+				$('#cases').text(countryData.cases);
+				$('#deaths').text(countryData.deaths);
+				$('#recovered').text(countryData.recovered);
+				$('#todayCases').text(countryData.todayCases);
+				$('#todayDeaths').text(countryData.todayDeaths);
+				$('#todayRecovered').text(countryData.todayRecovered);
+				$('#active').text(countryData.active);
+				$('#critical').text(countryData.critical);
+				$('#tests').text(countryData.tests);
+				$('#casesPerOneMillion').text(countryData.casesPerOneMillion);
+				$('#deathsPerOneMillion').text(countryData.deathsPerOneMillion);
+				$('#testsPerOneMillion').text(countryData.testsPerOneMillion);
+				$('#oneCasePerPeople').text(countryData.oneCasePerPeople);
+				$('#oneDeathPerPeople').text(countryData.oneDeathPerPeople);
+				$('#oneTestPerPeople').text(countryData.oneTestPerPeople);
+				$('#activePerOneMillion').text(countryData.activePerOneMillion);
+				$('#recoveredPerOneMillion').text(countryData.recoveredPerOneMillion);
+				$('#criticalPerOneMillion').text(countryData.criticalPerOneMillion);
+				$('#population').text(countryData.population);
+
+			});
+
+		});
+	</script>
+	<style type="text/css">
+		table thead tr {
+			background-color: #0055ff;
+			color: white
+		}
+	</style>
+</head>
+
+<body>
+	<div class="container-fluid">
+		<div class="table-responsive">
+			<h1 class="text-center">Covid-19 Tracker</h1>
+			<table class="table table-bordered table-striped table-hover" id="covidTable">
+				<thead>
+					<tr>
+						<th>Country</th>
+						<th>Today's Cases</th>
+						<th>Today's Deaths</th>
+						<th>Total Deaths</th>
+						<th>Today Recovered</th>
+						<th>Total Recovered</th>
+						<th>Total Cases</th>
+						<th>Total Tests</th>
+						<th>Population</th>
+					</tr>
+				</thead>
+			</table>
+		</div>
+	</div>
+
+	<!-- country modal -->
+	<div class="modal fade" id="countryModal" role="dialog">
+		<div class="modal-dialog .modal-dialog-centered modal-lg">
+
+			<!-- Modal content-->
+			<div class="modal-content">
+				<div class="modal-header bg-success">
+					<h2 class="modal-title"><img id="countryFlag" src="" width="80"> &nbsp; <span id="countryHeader" />
+					</h2>
+				</div>
+				<div class="modal-body bg-warning">
+					<div class="row">
+						<div class="col-md-4">
+							<h4>Total Cases : <span id="cases"></span></h4>
+							<h4>Today's Cases : <span id="todayCases"></span></h4>
+							<h4>Active Cases : <span id="active"></span></h4>
+							<h4>Cases per Million : <span id="casesPerOneMillion"></span></h4>
+							<h4>One case per Capita : <span id="oneCasePerPeople"></span></h4>
+							<h4>Active per Million : <span id="activePerOneMillion"></span></h4>
+							<h4>Total Population : <span id="population"></span></h4>
+						</div>
+						<div class="col-md-4">
+							<h4>Total Deaths : <span id="deaths"></span></h4>
+							<h4>Today's Deaths : <span id="todayDeaths"></span></h4>
+							<h4>Critical Cases : <span id="critical"></span></h4>
+							<h4>Deaths per Million : <span id="deathsPerOneMillion"></span></h4>
+							<h4>One death per Capita : <span id="oneDeathPerPeople"></span></h4>
+							<h4>Recovered per Million : <span id="recoveredPerOneMillion"></span></h4>
+						</div>
+						<div class="col-md-4">
+							<h4>Total Recovered : <span id="recovered"></span></h4>
+							<h4>Today's Recovered : <span id="todayRecovered"></span></h4>
+							<h4>Total Tests : <span id="tests"></span></h4>
+							<h4>Tests per Million : <span id="testsPerOneMillion"></span></h4>
+							<h4>One test per Capita : <span id="oneTestPerPeople"></span></h4>
+							<h4>Critical cases per Million : <span id="criticalPerOneMillion"></span></h4>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer bg-success">
+					<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</body>
+<style>
+.modal {
+    position: absolute;
+    top: 200px;
+    right: 100px;
+    bottom: 0;
+    left: 100px;
+    z-index: 10040;
+    overflow: auto;
+    overflow-y: auto;
+ }
+
+</style>
+
+</html>
